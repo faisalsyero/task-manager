@@ -8,7 +8,7 @@ After GitHub Pages finishes its first deployment, open:
 
 **https://faisalsyero.github.io/task-manager/**
 
-The workflow in `.github/workflows/pages.yml` publishes the site whenever changes are pushed to `main`. If Pages has not been enabled for the repository yet, open **Settings → Pages** on GitHub and select **GitHub Actions** as the build and deployment source. The workflow run and repository **Deployments** page show when the site is live.
+The workflow in `.github/workflows/pages.yml` publishes the site whenever changes are pushed to `main` and enables Pages automatically if needed. The workflow run and repository **Deployments** page show when the site is live.
 
 ## Save your tasks
 
