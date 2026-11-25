@@ -1,0 +1,11 @@
+{
+  "name": "Daymark Task Manager",
+  "short_name": "Daymark",
+  "description": "A calm, local-first task manager with a smart daily planner.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f7f4",
+  "theme_color": "#f7f7f4",
+  "categories": ["productivity"]
+}

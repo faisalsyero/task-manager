@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f7f4">
+    <meta name="description" content="A calm, local-first task manager with a smart daily planner.">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <title>Daymark — Task manager</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Daymark home">
+          <span class="brand-mark" aria-hidden="true">d</span>
+          <span>daymark</span>
+        </a>
+        <form class="quick-add" id="quick-add" role="search">
+          <label class="sr-only" for="quick-title">Add a task</label>
+          <span aria-hidden="true">＋</span>
+          <input id="quick-title" maxlength="120" placeholder="Add a task…  Enter to save" autocomplete="off">
+          <button type="submit" class="sr-only">Add task</button>
+        </form>
+        <button class="icon-button" id="settings-button" type="button" aria-label="Settings" title="Settings">⚙</button>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar" aria-label="Main navigation">
+          <p class="eyebrow">YOUR SPACE</p>
+          <nav class="navigation" id="navigation">
+            <button type="button" data-view="today" class="nav-item active"><span aria-hidden="true">◷</span> Today <span class="nav-count" id="today-count"></span></button>
+            <button type="button" data-view="week" class="nav-item"><span aria-hidden="true">▦</span> Week</button>
+            <button type="button" data-view="tasks" class="nav-item"><span aria-hidden="true">☷</span> All tasks <span class="nav-count" id="open-count"></span></button>
+            <button type="button" data-view="upcoming" class="nav-item"><span aria-hidden="true">↗</span> Upcoming</button>
+          </nav>
+          <div class="sidebar-divider"></div>
+          <p class="eyebrow">CATEGORIES</p>
+          <div class="category-nav" id="category-nav"></div>
+          <div class="sidebar-bottom">
+            <div class="privacy-note"><span aria-hidden="true">◉</span><span><strong>Your data stays here</strong><br>Saved in this browser</span></div>
+            <button class="text-button" type="button" id="export-sidebar">↓ Export a backup</button>
+          </div>
+        </aside>
+
+        <main class="main-content">
+          <section class="view-panel" id="view-panel" aria-live="polite"></section>
+          <footer class="app-footer">Made for a little more focus. <span>Private by design · Offline ready after first visit</span></footer>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="task-dialog" class="dialog">
+      <form method="dialog" id="task-form" class="dialog-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">TASK DETAILS</p><h2 id="task-dialog-title">New task</h2></div>
+          <button class="icon-button close-button" type="button" data-close="task-dialog" aria-label="Close">×</button>
+        </div>
+        <label class="field-label" for="task-title">Title <span>Required</span></label>
+        <input id="task-title" name="title" maxlength="120" required autofocus placeholder="What needs doing?">
+        <div class="field-row">
+          <div><label class="field-label" for="task-category">Category</label><select id="task-category" name="category"></select></div>
+          <div><label class="field-label" for="task-priority">Priority</label>
+            <select id="task-priority" name="priority">
+              <option value="low">▽ Low</option><option value="mid" selected>● Mid</option><option value="high">▲ High</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div><label class="field-label" for="task-due">Due date <span>Optional</span></label><input id="task-due" name="due" type="date"></div>
+          <div><label class="field-label" for="task-due-time">Due time <span>Optional</span></label><input id="task-due-time" name="dueTime" type="time"></div>
+        </div>
+        <div class="field-row">
+          <div><label class="field-label" for="task-estimate">Estimated effort</label><div class="input-suffix"><input id="task-estimate" name="estimateMin" type="number" min="15" step="15" value="60" required><span>minutes</span></div></div>
+          <label class="check-field hard-field"><input id="task-hard" name="hard" type="checkbox"><span>Hard deadline</span></label>
+        </div>
+        <label class="field-label" for="task-notes">Notes <span>Optional</span></label>
+        <textarea id="task-notes" name="notes" rows="3" maxlength="2000" placeholder="Add a few helpful details…"></textarea>
+        <p class="form-error" id="task-form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="button secondary" type="button" data-close="task-dialog">Cancel</button>
+          <button class="button primary" type="submit" id="task-save">Save task</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="settings-dialog" class="dialog settings-dialog">
+      <form method="dialog" id="settings-form" class="dialog-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">PERSONALISE</p><h2>Settings & data</h2></div>
+          <button class="icon-button close-button" type="button" data-close="settings-dialog" aria-label="Close">×</button>
+        </div>
+        <p class="section-intro">Set your daily capacity. The planner uses it to balance deadline work and flexible tasks.</p>
+        <div class="capacity-grid" id="capacity-grid"></div>
+        <label class="field-label" for="deadline-share">Daily capacity reserved for deadlines <strong id="share-label">75%</strong></label>
+        <input id="deadline-share" type="range" min="50" max="90" step="5">
+        <div class="days-off-section">
+          <div class="section-heading"><h3>Specific dates</h3><span>Set a day off or reduced capacity</span></div>
+          <div class="days-off-entry"><input id="off-date" type="date" aria-label="Date"><input id="off-capacity" type="number" min="0" max="1440" step="15" value="0" aria-label="Available minutes"><button class="button secondary" type="button" id="add-day-off">Add date</button></div>
+          <div id="days-off-list" class="days-off-list"></div>
+        </div>
+        <div class="settings-buttons">
+          <button class="button secondary" type="button" id="download-backup">↓ Export JSON backup</button>
+          <label class="button secondary file-button">↑ Import backup<input id="import-backup" type="file" accept="application/json,.json"></label>
+          <button class="button secondary" type="button" id="export-csv">Export tasks as CSV</button>
+        </div>
+        <div class="danger-zone">
+          <div><strong>Delete all data</strong><p>This permanently clears tasks and settings from this browser.</p></div>
+          <button class="button danger" type="button" id="delete-all">Delete all</button>
+        </div>
+        <p class="form-error" id="settings-message" role="status"></p>
+        <div class="dialog-actions"><button class="button primary" type="submit" id="settings-save">Save settings</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <input id="backup-picker" type="file" accept="application/json,.json" hidden>
+  </body>
+</html>
